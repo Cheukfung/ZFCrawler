@@ -68,6 +68,16 @@ try {
 
 容错可能不是很好，根据自己的情况进行修改
 
+# 案例
+
+课程表
+
+![](http://ww3.sinaimg.cn/large/6916d6ffgw1faznt2fav0j209h0gv3zr.jpg)
+
+成绩
+
+![](http://ww2.sinaimg.cn/large/6916d6ffgw1fazntlsytxj209h0gvmys.jpg)
+
 # License
 
 MIT License
