@@ -1,0 +1,28 @@
+{
+  "name": "cheukfung/zfcrawler",
+  "type": "library",
+  "description": "正方爬虫。",
+  "keywords": ["微信教务","正方","模拟登陆","教务系统"],
+  "homepage": "https://github.com/CheukFung",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Cheukfung Ho",
+      "email": "cheukfung08@gmail.com",
+      "homepage":"https://github.com/CheukFung"
+    }
+  ],
+  "require": {
+    "php": ">=5.5.0",
+    "guzzlehttp/guzzle": "~6.0",
+    "symfony/dom-crawler": "^3.0",
+    "symfony/css-selector": "^3.0",
+    "symfony/browser-kit": "^3.1",
+    "fabpot/goutte": "^3.1"
+  },
+  "autoload": {
+    "psr-4": {
+      "ZFCrawler\\": "src/"
+    }
+  }
+}
