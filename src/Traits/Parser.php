@@ -17,27 +17,29 @@ trait  Parser
      * @return array
      * @throws \Exception
      */
-    public function parserSchedule($crawler, $selector = self::SCHEDULE_SELECTOR)
+    public function parserSchedule($crawler, $selector)
     {
         $this->checkContent($crawler);
         try {
+            //获取table元素
             $crawler = $crawler->filter($selector);
             $page = $crawler->children();
-        } catch (\InvalidArgumentException $e) {
-            throw new \Exception('无法获取课表信息');
-        }
-        //删除第一、二行(星期、早晨）
-        $page = $page->reduce(function (Crawler $node, $i) {
-            if ($i == 0 || $i == 1) {
-                return false;
-            }
-        });
-        $array = $page->each(function (Crawler $node, $i) {
-            return $node->children()->each(function (Crawler $node, $j) {
-                $span = $node->attr('rowspan');
-                return $node->html() . (empty($span) ? '' : "span={$span}");
+            //删除table第一、二行(星期、早晨）
+            $page = $page->reduce(function (Crawler $node, $i) {
+                if ($i == 0 || $i == 1) {
+                    return false;
+                }
             });
-        });
+            //遍历课表，转换为二维数组,同时提取跨行标志
+            $array = $page->each(function (Crawler $node, $i) {
+                return $node->children()->each(function (Crawler $node, $j) {
+                    $span = $node->attr('rowspan');
+                    return $node->html() . (empty($span) ? '' : "span={$span}");
+                });
+            });
+        } catch (\InvalidArgumentException $e) {
+            throw new \Exception('无法处理课表信息',10004);
+        }
         /*这里一定要先遍历列再遍历行
           否则可能会出现课程错乱  */
         for ($i = 0; $i < 9; $i++) {//列数
@@ -148,7 +150,7 @@ trait  Parser
      * @param string $selector
      * @return array
      */
-    protected function parserCommonTable($crawler, $selector = self::COMMON_TABLE_SELECTOR)
+    protected function parserCommonTable($crawler, $selector)
     {
         if (!$this->checkContent($crawler)) {
             return [];
@@ -216,9 +218,11 @@ trait  Parser
         if (is_null($crawler)) {
             return false;
         }
+        $this->checkResult($crawler);
+        //如果该同学没有评教导致无法查询信息，会返回alert并且不会有view state
         if (preg_match("/alert\((.*?)\)/", $crawler->html(), $fail) && !preg_match("/name=\"__VIEWSTATE\" /", $crawler->html(), $regs)) {
             $err = $this->unicode_decode($fail[1]);
-            throw new \Exception("查询失败:" . $err);
+            throw new \Exception("查询失败:{$err}", 10003);
         }
         return true;
     }
